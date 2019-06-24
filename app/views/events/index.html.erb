@@ -19,12 +19,13 @@
       to empower people with technology through teaching and facilitating access,
       enlarging the community of people who give back and teach others.
       </p>
-                                  
-      <% if @events.empty? %>
-        <h2>There are currently no upcoming events.</h2>
-      <% end %>
-      <% @events.each do |event| %>
-        <%= render 'upcoming_event', event: event %>
+
+        <% if !@events.present? %>
+          <h2>There are currently no upcoming events.</h2>
+        <% else %>
+        <% @events.each do |event| %>
+          <%= render 'upcoming_event', event: event %>
+        <% end %>
       <% end %>
 
       <script>
@@ -88,7 +89,7 @@
       <p>Hundreds of workshops in dozens of cities around the world have been
       organized and taught by volunteers, based on our open source curricula.</p>
       <%= render 'shared/past_events_table' %>
-
+    
     </div>
   </div>
 </div>

@@ -9,7 +9,7 @@ class EventsController < ApplicationController
     respond_to do |format|
       format.html do
         @events = Event.upcoming.published_or_visible_to(current_user)
-                    .includes(:location, :region, :chapter, :organization, event_sessions: :location)
+          .includes(:location, :region, :chapter, :organization, event_sessions: :location)
         @event_regions = @events.map(&:region).compact.uniq
       end
       format.json do
@@ -26,8 +26,8 @@ class EventsController < ApplicationController
     @events = Event.upcoming.published_or_visible_to(current_user).includes(:event_sessions, :location, :region)
 
     respond_to do |format|
-      format.rss {render 'events/feed.rss.builder', layout: false}
-      format.atom {render 'events/feed.atom.builder', layout: false}
+      format.rss { render "events/feed.rss.builder", layout: false }
+      format.atom { render "events/feed.atom.builder", layout: false }
     end
   end
 
@@ -50,11 +50,11 @@ class EventsController < ApplicationController
         end
         @ordered_rsvps = {
           Role::VOLUNTEER => @event.ordered_rsvps(Role::VOLUNTEER),
-          Role::STUDENT => @event.ordered_rsvps(Role::STUDENT)
+          Role::STUDENT => @event.ordered_rsvps(Role::STUDENT),
         }
         @ordered_waitlist_rsvps = {
           Role::VOLUNTEER => @event.ordered_rsvps(Role::VOLUNTEER, waitlisted: true).to_a,
-          Role::STUDENT => @event.ordered_rsvps(Role::STUDENT, waitlisted: true).to_a
+          Role::STUDENT => @event.ordered_rsvps(Role::STUDENT, waitlisted: true).to_a,
         }
       end
       format.json do
@@ -76,6 +76,7 @@ class EventsController < ApplicationController
   def create
     skip_authorization
     result = EventEditor.new(current_user, params).create
+    @events = Event.upcoming.published_or_visible_to(current_user).includes(:event_sessions, :location, :region)
     @event = result.event
 
     flash[:notice] = result.notice if result.notice
